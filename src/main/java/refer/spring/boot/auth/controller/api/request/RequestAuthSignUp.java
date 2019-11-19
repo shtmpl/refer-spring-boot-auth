@@ -1,11 +1,16 @@
 package refer.spring.boot.auth.controller.api.request;
 
-public class RequestAccountSave {
+import javax.validation.constraints.NotBlank;
 
+public class RequestAuthSignUp {
+
+    @NotBlank
     private String username;
 
+    @NotBlank
     private String password;
 
+    @NotBlank
     private String passwordConfirmed;
 
     public String getUsername() {
