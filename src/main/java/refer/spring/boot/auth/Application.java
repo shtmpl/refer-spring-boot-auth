@@ -1,4 +1,4 @@
-package refer.spring.boot.template;
+package refer.spring.boot.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

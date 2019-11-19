@@ -2,24 +2,20 @@
 
 --changeset ibardych:0000000000042-1
 
-CREATE SEQUENCE runtime_configuration_id_seq
+CREATE SEQUENCE account_id_seq
   START WITH 1
   INCREMENT BY 1
   NO MINVALUE
   NO MAXVALUE
   CACHE 1;
 
-CREATE TABLE runtime_configuration
+CREATE TABLE account
 (
-  id          BIGINT PRIMARY KEY DEFAULT nextval('runtime_configuration_id_seq'),
-  param       VARCHAR(255),
-  value       TEXT,
-  description TEXT
+  id         BIGINT PRIMARY KEY DEFAULT nextval('account_id_seq'),
+  created_at TIMESTAMP WITH TIME ZONE,
+  username   VARCHAR(255),
+  password   VARCHAR(255)
 );
 
-ALTER TABLE runtime_configuration
-  ADD CONSTRAINT runtime_configuration_param_key UNIQUE (param);
-
-INSERT INTO runtime_configuration (id, param, value, description)
-VALUES (nextval('runtime_configuration_id_seq'),
-        'application.name', 'Template', 'Application name');
+ALTER TABLE account
+  ADD CONSTRAINT account_username_key UNIQUE (username);

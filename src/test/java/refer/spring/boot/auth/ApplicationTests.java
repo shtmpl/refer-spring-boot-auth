@@ -1,4 +1,4 @@
-package refer.spring.boot.template;
+package refer.spring.boot.auth;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

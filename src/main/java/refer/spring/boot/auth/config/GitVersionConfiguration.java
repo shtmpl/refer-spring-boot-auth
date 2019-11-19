@@ -1,4 +1,4 @@
-package refer.spring.boot.template.config;
+package refer.spring.boot.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

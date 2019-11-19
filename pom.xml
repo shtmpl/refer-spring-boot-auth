@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>refer.spring.boot</groupId>
-    <artifactId>template</artifactId>
+    <artifactId>auth</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
