@@ -1,7 +1,7 @@
 package refer.spring.boot.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import refer.spring.boot.auth.domain.Account;
@@ -14,16 +14,16 @@ import java.util.Optional;
 @Service
 public class AccountServiceImpl implements AccountService {
 
+    private final PasswordEncoder passwordEncoder;
+
     private final AccountRepository accountRepository;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository,
-                              BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.accountRepository = accountRepository;
+    public AccountServiceImpl(PasswordEncoder passwordEncoder,
+                              AccountRepository accountRepository) {
+        this.passwordEncoder = passwordEncoder;
 
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.accountRepository = accountRepository;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Optional<Account> findOwnAccount() {
-        return Optional.empty();
+    public Optional<Account> findAccount(String username) {
+        return accountRepository.findByUsername(username);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
         Account result = new Account();
         result.setCreatedAt(OffsetDateTime.now());
         result.setUsername(account.getUsername());
-        result.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
+        result.setPassword(passwordEncoder.encode(account.getPassword()));
 
         return accountRepository.save(result);
     }

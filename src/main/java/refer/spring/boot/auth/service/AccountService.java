@@ -8,7 +8,7 @@ public interface AccountService {
 
     Optional<Account> findAccount(Long id);
 
-    Optional<Account> findOwnAccount();
+    Optional<Account> findAccount(String username);
 
     Account saveAccount(Account account);
 }

@@ -21,6 +21,12 @@ public class ApiExceptionHandler {
                 .body(createResponseError(exception.getMessage()));
     }
 
+    @ExceptionHandler(UnauthenticatedException.class)
+    public ResponseEntity<?> handleUnauthenticatedException(UnauthenticatedException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(createResponseError(exception.getMessage()));
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

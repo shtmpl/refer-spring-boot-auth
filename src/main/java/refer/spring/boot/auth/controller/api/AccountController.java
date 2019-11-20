@@ -3,10 +3,9 @@ package refer.spring.boot.auth.controller.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import refer.spring.boot.auth.controller.api.response.ResponseAccount;
-import refer.spring.boot.auth.domain.Account;
 import refer.spring.boot.auth.domain.AccountNotFoundException;
 import refer.spring.boot.auth.service.AccountService;
 
@@ -21,14 +20,12 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<ResponseAccount> identify() {
-        // FIXME:
-
-        Account account = accountService.findOwnAccount()
+    @GetMapping("/{id}")
+    public ResponseEntity<?> show(@PathVariable Long id) {
+        return accountService.findAccount(id)
+                .map(ApiMapper.INSTANCE::toResponseAccount)
+                .map(ResponseEntity::ok)
                 .orElseThrow(() ->
-                        new AccountNotFoundException("No account found: %s"));
-
-        return ResponseEntity.ok(ApiMapper.INSTANCE.toResponseAccount(account));
+                        new AccountNotFoundException(String.format("No account found for id: %s", id)));
     }
 }
