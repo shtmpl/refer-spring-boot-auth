@@ -2,7 +2,7 @@ package refer.spring.boot.auth.domain;
 
 public abstract class AbstractPersistable {
 
-    abstract public Long getId();
+    public abstract Long getId();
 
     @Override
     public boolean equals(Object other) {
