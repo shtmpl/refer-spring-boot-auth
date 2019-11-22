@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import refer.spring.boot.auth.controller.api.response.ResponseError;
+import refer.spring.boot.auth.domain.AuthException;
 import refer.spring.boot.auth.domain.ResourceNotFoundException;
 
 @ControllerAdvice
@@ -21,8 +22,8 @@ public class ApiExceptionHandler {
                 .body(createResponseError(exception.getMessage()));
     }
 
-    @ExceptionHandler(UnauthenticatedException.class)
-    public ResponseEntity<?> handleUnauthenticatedException(UnauthenticatedException exception) {
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<?> handleAuthException(AuthException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(createResponseError(exception.getMessage()));
     }

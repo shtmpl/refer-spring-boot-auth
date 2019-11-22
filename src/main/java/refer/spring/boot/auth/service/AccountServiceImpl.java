@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Transactional
 @Service
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements refer.spring.boot.auth.service.AccountService {
 
     private final PasswordEncoder passwordEncoder;
 

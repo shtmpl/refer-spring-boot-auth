@@ -2,7 +2,7 @@ package refer.spring.boot.auth.controller.api.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class RequestAuthSignUp {
+public class RequestSignUp {
 
     @NotBlank
     private String username;
