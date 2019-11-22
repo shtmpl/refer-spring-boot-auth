@@ -2,13 +2,15 @@ package refer.spring.boot.auth.service;
 
 import refer.spring.boot.auth.domain.Account;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public interface JwtService {
 
-    String readTokenSubject(String token);
+    String getTokenSubject(String token);
 
-    Date readTokenExpiration(String token);
+    OffsetDateTime getTokenIssuedAt(String token);
+
+    OffsetDateTime getTokenExpiration(String token);
 
     String createToken(Account account);
 

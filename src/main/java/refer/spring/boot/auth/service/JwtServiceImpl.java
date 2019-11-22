@@ -7,11 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import refer.spring.boot.auth.domain.Account;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
+import java.time.OffsetDateTime;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.function.Function;
 
 @Service
@@ -24,38 +21,58 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String readTokenSubject(String token) {
-        return extractTokenClaim(token, Claims::getSubject);
+    public String getTokenSubject(String token) {
+        return getTokenClaim(token, Claims::getSubject);
     }
 
     @Override
-    public Date readTokenExpiration(String token) {
-        return extractTokenClaim(token, Claims::getExpiration);
+    public OffsetDateTime getTokenIssuedAt(String token) {
+        return toOffsetDateTime(getTokenClaim(token, Claims::getIssuedAt));
     }
 
-    private <X> X extractTokenClaim(String token, Function<Claims, X> extraction) {
+    @Override
+    public OffsetDateTime getTokenExpiration(String token) {
+        return toOffsetDateTime(getTokenClaim(token, Claims::getExpiration));
+    }
+
+    private <X> X getTokenClaim(String token, Function<Claims, X> extractor) {
         Claims claims = Jwts.parser()
                 .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
 
-        return extraction.apply(claims);
+        return extractor.apply(claims);
     }
 
     @Override
     public String createToken(Account account) {
         return Jwts.builder()
                 .setSubject(account.getUsername())
-                .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                .setIssuedAt(toDate(OffsetDateTime.now()))
+                .setExpiration(toDate(OffsetDateTime.now().plusDays(1)))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
 
     @Override
     public boolean isTokenValid(String token, Account account) {
-        String username = account.getUsername();
+        return account.getUsername().equals(getTokenSubject(token)) &&
+                OffsetDateTime.now().isBefore(getTokenExpiration(token));
+    }
 
-        return username.equals(readTokenSubject(token)) && Date.from(Instant.now()).before(readTokenExpiration(token));
+    private static Date toDate(OffsetDateTime offsetDateTime) {
+        if (offsetDateTime == null) {
+            return null;
+        }
+
+        return Date.from(offsetDateTime.toInstant());
+    }
+
+    private static OffsetDateTime toOffsetDateTime(Date date) {
+        if (date == null) {
+            return null;
+        }
+
+        return date.toInstant().atOffset(OffsetDateTime.now().getOffset());
     }
 }

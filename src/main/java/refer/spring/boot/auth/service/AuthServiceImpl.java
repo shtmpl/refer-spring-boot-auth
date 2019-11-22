@@ -71,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthException("No token provided");
         }
 
-        String tokenSubject = jwtService.readTokenSubject(token);
+        String tokenSubject = jwtService.getTokenSubject(token);
         if (tokenSubject == null) {
             throw new AuthException("Invalid token provided");
         }
