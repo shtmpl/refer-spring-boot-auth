@@ -1,6 +1,8 @@
 package refer.spring.boot.auth.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +14,7 @@ import java.util.Optional;
 
 @Transactional
 @Service
-public class AccountServiceImpl implements refer.spring.boot.auth.service.AccountService {
+public class AccountServiceImpl implements AccountService {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -24,6 +26,13 @@ public class AccountServiceImpl implements refer.spring.boot.auth.service.Accoun
         this.passwordEncoder = passwordEncoder;
 
         this.accountRepository = accountRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return findAccount(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(String.format("No username found: %s", username)));
     }
 
     @Override

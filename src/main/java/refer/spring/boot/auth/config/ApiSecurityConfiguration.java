@@ -10,32 +10,34 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import refer.spring.boot.auth.controller.api.filter.JwtRequestFilter;
-import refer.spring.boot.auth.repository.AccountRepository;
 import refer.spring.boot.auth.service.AccountService;
-import refer.spring.boot.auth.service.AccountServiceImpl;
 import refer.spring.boot.auth.service.AuthService;
 import refer.spring.boot.auth.service.AuthServiceImpl;
 import refer.spring.boot.auth.service.JwtService;
-import refer.spring.boot.auth.service.JwtServiceImpl;
-import refer.spring.boot.auth.service.UserDetailsServiceImpl;
 
 @EnableWebSecurity
 @Configuration
 public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private AccountRepository accountRepository;
+    private JwtService jwtService;
+
+    private AccountService accountService;
 
     @Value("${jwt.secret}")
     private String secret;
 
     @Autowired
-    public void setAccountRepository(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public void setJwtService(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
+    @Autowired
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @Bean
@@ -44,23 +46,8 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtService jwtService() {
-        return new JwtServiceImpl(secret);
-    }
-
-    @Bean
-    public AccountService accountService() {
-        return new AccountServiceImpl(passwordEncoder(), accountRepository);
-    }
-
-    @Bean
     public AuthService authService() throws Exception {
-        return new AuthServiceImpl(authenticationManagerBean(), accountService(), jwtService());
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl(accountRepository);
+        return new AuthServiceImpl(authenticationManagerBean(), accountService, jwtService);
     }
 
     @Bean
@@ -71,7 +58,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
+        auth.userDetailsService(accountService);
     }
 
     @Override
