@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Optional<String> findOwnAccountUsername() {
+    public Optional<String> findAuthenticatedUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = getPrincipal(authentication);
         if (userDetails == null) {
@@ -59,14 +59,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void auth(String username, String password) {
+    public void authenticate(String username, String password) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
 
         SecurityContextHolder.getContext().setAuthentication(authenticationManager.authenticate(authentication));
     }
 
     @Override
-    public void auth(String token) {
+    public void authenticate(String token) {
         if (token == null) {
             throw new AuthException("No token provided");
         }

@@ -4,11 +4,11 @@ import java.util.Optional;
 
 public interface AuthService {
 
-    Optional<String> findOwnAccountUsername();
+    Optional<String> findAuthenticatedUsername();
 
     boolean isAuthenticated();
 
-    void auth(String username, String password);
+    void authenticate(String username, String password);
 
-    void auth(String token);
+    void authenticate(String token);
 }

@@ -36,7 +36,7 @@ public class AuthController {
 
     @GetMapping("/id")
     public ResponseAccount identify() {
-        return authService.findOwnAccountUsername()
+        return authService.findAuthenticatedUsername()
                 .flatMap(accountService::findAccount)
                 .map(ApiMapper.INSTANCE::toResponseAccount)
                 .orElseThrow(() ->
@@ -45,9 +45,9 @@ public class AuthController {
 
     @PostMapping("/sign-in")
     public ResponseToken signIn(@Valid @RequestBody RequestSignIn request) {
-        authService.auth(request.getUsername(), request.getPassword());
+        authService.authenticate(request.getUsername(), request.getPassword());
 
-        Account account = authService.findOwnAccountUsername()
+        Account account = authService.findAuthenticatedUsername()
                 .flatMap(accountService::findAccount)
                 .orElseThrow(() ->
                         new AuthException("Not authenticated"));

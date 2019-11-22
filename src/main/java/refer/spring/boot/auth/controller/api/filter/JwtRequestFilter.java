@@ -26,7 +26,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = getToken(request);
         if (token != null && !authService.isAuthenticated()) {
-            authService.auth(token);
+            authService.authenticate(token);
         }
 
         filterChain.doFilter(request, response);
